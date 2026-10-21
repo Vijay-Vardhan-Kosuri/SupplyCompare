@@ -178,6 +178,6 @@ SupplyCompare/
 
 ## 👥 Authentic Team Collaboration Setup
 
-* **Alex Rivera** (`alex.rivera@supplycompare.local`): Lead Architect & Core Comparison Engine
-* **Priya Sharma** (`priya.sharma@supplycompare.local`): Backend Services & MySQL Database Specialist
-* **Maya Chen** (`maya.chen@supplycompare.local`): Frontend Lead & UI/UX Product Designer
+* **Venkat Vijay Vardhan Kosuri** : Lead Architect & Core Comparison Engine
+* **Kalyan Nanduri** : Backend Services & MySQL Database Specialist
+* **Revathi Miriyam** : Frontend Lead & UI/UX Product Designer
