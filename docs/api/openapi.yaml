@@ -1,0 +1,172 @@
+openapi: 3.0.3
+info:
+  title: SupplyCompare REST API
+  description: Retailer supplier quotation comparison and purchasing platform API.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local Development Server
+
+paths:
+  /auth/login/:
+    post:
+      summary: Authenticate user and obtain JWT tokens
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful with JWT tokens
+
+  /comparison/compare/:
+    get:
+      summary: Run multi-supplier quotation comparison
+      parameters:
+        - name: product_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: quantity
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: unit
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Evaluated eligible and ineligible quotes with lowest cost recommendation
+
+  /purchasing/:
+    get:
+      summary: List purchase orders
+      responses:
+        '200':
+          description: Array of purchase orders
+    post:
+      summary: Create purchase order from quotation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [quotation_id, quantity]
+              properties:
+                quotation_id:
+                  type: integer
+                quantity:
+                  type: number
+                delivery_address:
+                  type: string
+                notes:
+                  type: string
+      responses:
+        '201':
+          description: Purchase order created in draft status
+
+  /purchasing/{id}/transition/:
+    post:
+      summary: Transition purchase order status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [submitted, confirmed, shipped, received, cancelled]
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Status transition recorded
+
+  /purchasing/{id}/receive/:
+    post:
+      summary: Receive goods and atomically restock inventory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      item_id:
+                        type: integer
+                      quantity_received:
+                        type: number
+                      quantity_damaged:
+                        type: number
+                      discrepancy_notes:
+                        type: string
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Goods received and inventory updated
+
+  /purchasing/{id}/pdf/:
+    get:
+      summary: Download purchase order PDF
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: PDF binary stream
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+  /inventory/stock/:
+    get:
+      summary: List inventory stock balances
+      responses:
+        '200':
+          description: Current physical stock balances
+
+  /analytics/dashboard/:
+    get:
+      summary: Get procurement KPI metrics and calculated savings
+      responses:
+        '200':
+          description: Real-time procurement analytics

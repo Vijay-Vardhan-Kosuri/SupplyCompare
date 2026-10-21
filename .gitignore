@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache/
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment secrets - STRICTLY EXCLUDED
+.env
+.env.*
+*.env
+!.env.example
+!example.env
+
+# Local MySQL databases / logs
+*.log
+*.sqlite3
+db.sqlite3
+
+# OS generated files
+.DS_Store
+Thumbs.db

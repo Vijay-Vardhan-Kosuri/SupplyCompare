@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: supplycompare_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: supplycompare_db
+      MYSQL_ROOT_PASSWORD: rootpassword123
+      MYSQL_USER: supplyuser
+      MYSQL_PASSWORD: supplypassword123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword123"]
+      timeout: 10s
+      retries: 5
+    networks:
+      - supplycompare_net
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: supplycompare_backend
+    restart: always
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DB_ENGINE=mysql
+      - DB_NAME=supplycompare_db
+      - DB_USER=supplyuser
+      - DB_PASSWORD=supplypassword123
+      - DB_HOST=db
+      - DB_PORT=3306
+      - SECRET_KEY=docker-supplycompare-secure-key-2026
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - supplycompare_net
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: supplycompare_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+    depends_on:
+      - backend
+    networks:
+      - supplycompare_net
+
+volumes:
+  mysql_data:
+
+networks:
+  supplycompare_net:
+    driver: bridge

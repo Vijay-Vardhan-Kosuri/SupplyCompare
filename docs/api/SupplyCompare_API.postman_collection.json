@@ -1,0 +1,190 @@
+{
+  "info": {
+    "name": "SupplyCompare REST API",
+    "_postman_id": "b3e098a1-7c2a-4df4-a841-893cfbb1e892",
+    "description": "Comprehensive Postman collection for SupplyCompare Supplier Quotation & Purchasing Management Platform.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000/api/v1" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login Retailer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"retailer@supplycompare.local\",\n  \"password\": \"Retailer@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login/", "host": ["{{baseUrl}}"], "path": ["auth", "login", ""] }
+          }
+        },
+        {
+          "name": "Register Shopkeeper",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new_retailer@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"first_name\": \"Kiran\",\n  \"last_name\": \"Reddy\",\n  \"role\": \"retailer\",\n  \"shop_name\": \"Reddy General Store\",\n  \"city\": \"Hyderabad\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register/", "host": ["{{baseUrl}}"], "path": ["auth", "register", ""] }
+          }
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me/", "host": ["{{baseUrl}}"], "path": ["auth", "me", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotation Comparison Engine",
+      "item": [
+        {
+          "name": "Compare Quotations (10 Cartons - Prompt Case 1)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/comparison/compare/?product_id=10&quantity=10&unit=carton",
+              "host": ["{{baseUrl}}"],
+              "path": ["comparison", "compare", ""],
+              "query": [
+                { "key": "product_id", "value": "10" },
+                { "key": "quantity", "value": "10" },
+                { "key": "unit", "value": "carton" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Compare Quotations (15 Cartons - Prompt Case 2)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/comparison/compare/?product_id=10&quantity=15&unit=carton",
+              "host": ["{{baseUrl}}"],
+              "path": ["comparison", "compare", ""],
+              "query": [
+                { "key": "product_id", "value": "10" },
+                { "key": "quantity", "value": "15" },
+                { "key": "unit", "value": "carton" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Purchasing & Orders",
+      "item": [
+        {
+          "name": "List Purchase Orders",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/purchasing/", "host": ["{{baseUrl}}"], "path": ["purchasing", ""] }
+          }
+        },
+        {
+          "name": "Create PO from Quotation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quotation_id\": 1,\n  \"quantity\": 15,\n  \"delivery_address\": \"Main Store Gate, Hyderabad\",\n  \"notes\": \"Standard replenishment\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/purchasing/", "host": ["{{baseUrl}}"], "path": ["purchasing", ""] }
+          }
+        },
+        {
+          "name": "Transition PO Status",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\",\n  \"notes\": \"Supplier acknowledged order\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/purchasing/1/transition/", "host": ["{{baseUrl}}"], "path": ["purchasing", "1", "transition", ""] }
+          }
+        },
+        {
+          "name": "Download PO PDF",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/purchasing/1/pdf/", "host": ["{{baseUrl}}"], "path": ["purchasing", "1", "pdf", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory & Stock",
+      "item": [
+        {
+          "name": "Get Stock Balances",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/inventory/stock/", "host": ["{{baseUrl}}"], "path": ["inventory", "stock", ""] }
+          }
+        },
+        {
+          "name": "Adjust Physical Count",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": 1,\n  \"new_quantity\": 25,\n  \"reason\": \"adjustment_add\",\n  \"notes\": \"Physical stock recount\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/inventory/adjust/", "host": ["{{baseUrl}}"], "path": ["inventory", "adjust", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Procurement Analytics",
+      "item": [
+        {
+          "name": "Dashboard KPI Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/dashboard/", "host": ["{{baseUrl}}"], "path": ["analytics", "dashboard", ""] }
+          }
+        },
+        {
+          "name": "Spending by Supplier",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/supplier-spending/", "host": ["{{baseUrl}}"], "path": ["analytics", "supplier-spending", ""] }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[run]
+source = backend/apps
+omit =
+    */tests/*
+    */migrations/*
+    backend/config/*
+
+[report]
+show_missing = True
+precision = 2
