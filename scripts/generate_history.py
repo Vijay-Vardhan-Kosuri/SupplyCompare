@@ -95,8 +95,11 @@ def main():
             "gh", "pr", "list", "--repo", REPO, "--head", branch, "--json", "url", "--limit", "1"
         ], text=True, capture_output=True)
         if existing.returncode != 0 or not existing.stdout.strip() or existing.stdout.strip() == "[]":
-            gh_cmd = ["gh", "pr", "create", "--repo", REPO, "--base", "main", "--head", branch, "--title", pr_title]
-            create_result = subprocess.run(gh_cmd, input=pr_body, text=True, capture_output=True)
+            gh_cmd = [
+                "gh", "pr", "create", "--repo", REPO, "--base", "main", "--head", branch,
+                "--title", pr_title, "--body", pr_body
+            ]
+            create_result = subprocess.run(gh_cmd, text=True, capture_output=True)
             if create_result.returncode != 0:
                 create_result = run_retry(gh_cmd, retries=5, sleep_seconds=5)
                 if create_result.returncode != 0:
